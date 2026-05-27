@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar';
 import Filters from '../components/Filters';
 import InternshipCard from '../components/InternshipCard';
 import styles from './page.module.css';
+import mockDataFallback from '@/data/mockInternships.json';
 
 const DEFAULT_FILTERS = {
   profiles: [],
@@ -24,6 +25,17 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
+  const processData = (data) => {
+    if (data && data.internships_meta && data.internship_ids) {
+      const list = data.internship_ids.map(id => data.internships_meta[id]).filter(Boolean);
+      setInternships(list);
+    } else if (data && data.internships_meta) {
+      setInternships(Object.values(data.internships_meta));
+    } else {
+      throw new Error('Invalid data structure');
+    }
+  };
+
   // Fetch internship data
   const fetchData = async () => {
     setLoading(true);
@@ -31,24 +43,17 @@ export default function Home() {
     try {
       const response = await fetch('/api/search');
       if (!response.ok) {
-        throw new Error(`Failed to fetch internships: ${response.statusText}`);
+        throw new Error(`Failed to fetch internships: ${response.status}`);
       }
       const data = await response.json();
-      
-      // Map meta mapped by IDs in order of internship_ids
-      if (data && data.internships_meta && data.internship_ids) {
-        const list = data.job_ids || data.internship_ids
-          ? data.internship_ids.map(id => data.internships_meta[id]).filter(Boolean)
-          : Object.values(data.internships_meta);
-        setInternships(list);
-      } else if (data && data.internships_meta) {
-        setInternships(Object.values(data.internships_meta));
-      } else {
-        throw new Error('Invalid data structure received from server');
-      }
+      processData(data);
     } catch (err) {
-      console.error(err);
-      setError(err.message || 'Something went wrong while loading internships. Please try again.');
+      console.warn('Live fetch failed, falling back to mock data:', err.message);
+      try {
+        processData(mockDataFallback);
+      } catch (fallbackErr) {
+        setError('Failed to parse internship data.');
+      }
     } finally {
       setLoading(false);
     }

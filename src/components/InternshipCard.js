@@ -74,9 +74,21 @@ export default function InternshipCard({ internship }) {
     locationText = 'Remote / WFH';
   }
 
-  // Format posted by label classes
-  const isTodayOrRecent = posted_by_label_type === 'success' || 
-    (posted_by_label && (posted_by_label.toLowerCase().includes('today') || posted_by_label.toLowerCase().includes('1 day')));
+  // Safe label extraction to avoid rendering raw objects
+  const allLabels = [];
+  if (Array.isArray(labels)) {
+    labels.forEach(lblObj => {
+      if (lblObj && typeof lblObj === 'object') {
+        if (Array.isArray(lblObj.label_value)) {
+          lblObj.label_value.forEach(val => {
+            if (val !== 'Internship' && !allLabels.includes(val)) allLabels.push(val);
+          });
+        }
+      } else if (typeof lblObj === 'string' && lblObj !== 'Internship' && !allLabels.includes(lblObj)) {
+        allLabels.push(lblObj);
+      }
+    });
+  }
 
   return (
     <div className={`${styles.card} fade-in`}>
@@ -182,11 +194,9 @@ export default function InternshipCard({ internship }) {
         {office_days && (
           <span className="badge badge-info">{office_days}</span>
         )}
-        {labels.map((lblGroup, idx) => 
-          Array.isArray(lblGroup) ? lblGroup.map((lbl, sIdx) => (
-            lbl !== 'Internship' && <span key={`${idx}-${sIdx}`} className="badge badge-neutral">{lbl}</span>
-          )) : <span key={idx} className="badge badge-neutral">{lblGroup}</span>
-        )}
+        {allLabels.map((lbl, idx) => (
+          <span key={idx} className="badge badge-neutral">{lbl}</span>
+        ))}
       </div>
 
       <div className={styles.footer}>

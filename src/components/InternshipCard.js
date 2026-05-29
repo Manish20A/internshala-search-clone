@@ -40,8 +40,9 @@ export default function InternshipCard({ internship }) {
   } = internship;
 
   // Generate a consistent color based on company name
-  const getAvatarColor = (name) => {
-    if (!name) return AVATAR_COLORS[0];
+  const getAvatarColor = (val) => {
+    if (!val) return AVATAR_COLORS[0];
+    const name = String(val);
     let hash = 0;
     for (let i = 0; i < name.length; i++) {
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -49,11 +50,13 @@ export default function InternshipCard({ internship }) {
     return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
   };
 
-  const getInitials = (name) => {
-    if (!name) return 'IS';
+  const getInitials = (val) => {
+    if (!val) return 'IS';
+    const name = String(val);
     const cleanName = name.replace(/\(.*\)/g, '').trim(); // Remove brackets like (Gurgaon, India)
-    const words = cleanName.split(/\s+/);
-    if (words.length >= 2) {
+    if (!cleanName) return 'IS';
+    const words = cleanName.split(/\s+/).filter(Boolean);
+    if (words.length >= 2 && words[0][0] && words[1][0]) {
       return (words[0][0] + words[1][0]).toUpperCase();
     }
     return cleanName.substring(0, 2).toUpperCase();
@@ -68,8 +71,10 @@ export default function InternshipCard({ internship }) {
   let locationText = '';
   if (work_from_home) {
     locationText = 'Work From Home';
-  } else if (location_names && location_names.length > 0) {
-    locationText = location_names.join(', ');
+  } else if (Array.isArray(location_names) && location_names.length > 0) {
+    locationText = location_names.filter(Boolean).join(', ');
+  } else if (location_names && typeof location_names === 'string') {
+    locationText = location_names;
   } else {
     locationText = 'Remote / WFH';
   }

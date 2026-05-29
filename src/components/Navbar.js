@@ -31,10 +31,10 @@ export default function Navbar() {
           <li className={styles.navItem} onClick={() => setIsOpen(false)}>Courses</li>
           <li className={styles.navItem} onClick={() => setIsOpen(false)}>Mentorships</li>
           
-          <div className={styles.navActionsMobile}>
+          <li className={styles.navActionsMobile}>
             <button className={styles.loginBtn}>Login</button>
             <button className={styles.registerBtn}>Register</button>
-          </div>
+          </li>
         </ul>
 
         <div className={styles.navActions}>

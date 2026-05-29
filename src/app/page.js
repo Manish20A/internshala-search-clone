@@ -35,6 +35,7 @@ export default function Home() {
 
   const loading = false;
   const error = null;
+  const fetchData = () => {};
 
   // Compute unique profiles dynamically
   const allProfiles = useMemo(() => {

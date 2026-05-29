@@ -263,3 +263,22 @@
     font-weight: 600;
   }
 }
+
+.applyFiltersBtn {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;
+  text-align: center;
+}
+
+.applyFiltersBtn:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 4px 10px rgba(0, 139, 220, 0.2);
+}

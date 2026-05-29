@@ -251,7 +251,7 @@ export default function Filters({
                 checked={filters.wfh}
                 onChange={handleWfhChange}
               />
-              <span className={styles.checkmark}></span>
+              <span className="checkmark"></span>
               Work from home
             </label>
             <label className="checkbox-container">
@@ -260,7 +260,7 @@ export default function Filters({
                 checked={filters.partTime}
                 onChange={handlePartTimeChange}
               />
-              <span className={styles.checkmark}></span>
+              <span className="checkmark"></span>
               Part-time
             </label>
           </div>
@@ -310,7 +310,7 @@ export default function Filters({
         {/* Apply Button (Visible only on mobile inside menu) */}
         {isMobileOpen && (
           <button 
-            className="registerBtn" 
+            className={styles.applyFiltersBtn} 
             style={{ width: '100%', marginTop: '16px' }}
             onClick={() => setIsMobileOpen(false)}
           >

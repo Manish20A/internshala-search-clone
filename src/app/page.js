@@ -46,7 +46,7 @@ export default function Home() {
 
   // Compute unique locations dynamically
   const allLocations = useMemo(() => {
-    const locSet = new Set();
+    const locSet = new Set(['Remote']);
     internships.forEach(item => {
       if (item.location_names && item.location_names.length > 0) {
         item.location_names.forEach(loc => {

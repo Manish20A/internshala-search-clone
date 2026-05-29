@@ -37,11 +37,13 @@ export default function Filters({
 
   // Filter list of profiles/locations for autocomplete
   const filteredProfiles = allProfiles.filter(profile => 
+    typeof profile === 'string' &&
     profile.toLowerCase().includes(profileSearch.toLowerCase()) &&
     !filters.profiles.includes(profile)
   );
 
   const filteredLocations = allLocations.filter(loc => 
+    typeof loc === 'string' &&
     loc.toLowerCase().includes(locationSearch.toLowerCase()) &&
     !filters.locations.includes(loc)
   );

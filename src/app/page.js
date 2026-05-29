@@ -75,22 +75,26 @@ export default function Home() {
     const locSet = new Set();
     internships.forEach(item => {
       if (item.location_names && item.location_names.length > 0) {
-        item.location_names.forEach(loc => locSet.add(loc));
+        item.location_names.forEach(loc => {
+          if (loc && typeof loc === 'string') locSet.add(loc);
+        });
       }
     });
     return Array.from(locSet).sort();
   }, [internships]);
 
   // Helper to parse duration string to approximate months
-  const parseDuration = (str) => {
-    if (!str) return 0;
+  const parseDuration = (val) => {
+    if (!val) return 0;
+    if (typeof val === 'number') return val;
+    const str = String(val);
     const match = str.match(/\d+/);
     if (!match) return 0;
-    const val = parseInt(match[0], 10);
+    const num = parseInt(match[0], 10);
     if (str.toLowerCase().includes('week')) {
-      return Math.max(1, Math.round(val / 4));
+      return Math.max(1, Math.round(num / 4));
     }
-    return val;
+    return num;
   };
 
   // Perform filtering on the client side
@@ -99,10 +103,10 @@ export default function Home() {
       // 1. Text Search query
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase().trim();
-        const matchesTitle = item.title?.toLowerCase().includes(query);
-        const matchesCompany = item.company_name?.toLowerCase().includes(query);
-        const matchesLoc = item.location_names && item.location_names.some(loc => loc.toLowerCase().includes(query));
-        const matchesProfileName = item.profile_name?.toLowerCase().includes(query);
+        const matchesTitle = item.title ? item.title.toLowerCase().includes(query) : false;
+        const matchesCompany = item.company_name ? item.company_name.toLowerCase().includes(query) : false;
+        const matchesLoc = item.location_names && item.location_names.some(loc => loc && loc.toLowerCase().includes(query));
+        const matchesProfileName = item.profile_name ? item.profile_name.toLowerCase().includes(query) : false;
         
         if (!matchesTitle && !matchesCompany && !matchesLoc && !matchesProfileName) {
           return false;

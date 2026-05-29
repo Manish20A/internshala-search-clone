@@ -94,6 +94,10 @@ export default function InternshipCard({ internship }) {
       }
     });
   }
+  // Format posted by label classes
+  const isTodayOrRecent = posted_by_label_type === 'success' || 
+    (posted_by_label && typeof posted_by_label === 'string' && 
+      (posted_by_label.toLowerCase().includes('today') || posted_by_label.toLowerCase().includes('1-day') || posted_by_label.toLowerCase().includes('1 day')));
 
   return (
     <div className={`${styles.card} fade-in`}>

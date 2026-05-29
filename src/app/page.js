@@ -17,51 +17,24 @@ const DEFAULT_FILTERS = {
 };
 
 export default function Home() {
-  const [internships, setInternships] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  
+  // Parse the mock data directly on startup
+  const initialInternships = useMemo(() => {
+    const data = mockDataFallback;
+    if (data && data.internships_meta && data.internship_ids) {
+      return data.internship_ids.map(id => data.internships_meta[id]).filter(Boolean);
+    } else if (data && data.internships_meta) {
+      return Object.values(data.internships_meta).filter(Boolean);
+    }
+    return [];
+  }, []);
+
+  const [internships] = useState(initialInternships);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
-  const processData = (data) => {
-    if (data && data.internships_meta && data.internship_ids) {
-      const list = data.internship_ids.map(id => data.internships_meta[id]).filter(Boolean);
-      setInternships(list);
-    } else if (data && data.internships_meta) {
-      setInternships(Object.values(data.internships_meta));
-    } else {
-      throw new Error('Invalid data structure');
-    }
-  };
-
-  // Fetch internship data
-  const fetchData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch('/api/search');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch internships: ${response.status}`);
-      }
-      const data = await response.json();
-      processData(data);
-    } catch (err) {
-      console.warn('Live fetch failed, falling back to mock data:', err.message);
-      try {
-        processData(mockDataFallback);
-      } catch (fallbackErr) {
-        setError('Failed to parse internship data.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const loading = false;
+  const error = null;
 
   // Compute unique profiles dynamically
   const allProfiles = useMemo(() => {
